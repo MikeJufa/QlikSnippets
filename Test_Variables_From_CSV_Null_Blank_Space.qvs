@@ -1,0 +1,38 @@
+//Importing Variables from CSV file, Option A
+VariableSource:
+Load
+    Variable,
+	Expression
+From [lib://DataFile\Variables.csv]
+(txt, codepage is 28591, embedded labels, delimiter is ',', msq)
+;
+
+For i = 0 to NoOfRows('VariableSource') - 1
+    LET vVariable = Peek('Variable', i, 'VariableSource');
+    LET [$(vVariable)] = Peek('Expression', i, 'VariableSource');
+Next
+
+SET i = ''; //keep variable i, but no expression
+SET vVariable = ; //remove vVariable
+
+Drop Table VariableSource;
+
+
+
+//Importing Variables from CSV file, Option B
+Load
+    Variable,
+	Expression
+From [lib://DataFile\Variables.csv]
+(txt, codepage is 28591, embedded labels, delimiter is ',', msq)
+;
+
+For i = 0 to NoOfRows('VariableSource') - 1
+    LET vVariableName = Peek('Variable', i, 'VariableSource');
+	LET vVariableExp = Peek('Expression', i, 'VariableSource');
+	SET $(vVariableName) = $(vVariableExp);
+Next
+
+SET i = ''; //keep variable i, but no expression
+SET vVariableName = ; //remove vVariableName
+SET vVariableExp = ; //remove vVariableExp
