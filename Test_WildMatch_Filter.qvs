@@ -1,0 +1,36 @@
+LET vClientPrefix = Upper(SubField(DocumentTitle(),'_',1));
+
+IF vClientPrefix = 'RAD' THEN
+
+    T1:
+    LOAD *
+	WHERE NOT WildMatch(Company,'cvs*') > 0
+	;
+	LOAD *
+	Inline
+	[
+	Name, Company
+	John, abc.com
+	Mike, cvs.com
+	Peter, cvshealth.com
+	Linda, kkk.com
+	Same, cvstest.com
+	]
+	;
+
+ELSE
+
+    T1:
+	LOAD *
+	Inline
+	[
+	Name, Company
+	John, abc.com
+	Mike, cvs.com
+	Peter, cvshealth.com
+	Linda, kkk.com
+	Same, cvstest.com
+	]
+	;
+
+ENDIF
