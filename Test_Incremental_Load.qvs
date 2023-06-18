@@ -1,0 +1,160 @@
+/*
+//Initially 2023-06-15 cboe all options daily data file.
+SET vEnv = 'Dev';
+
+FOR EACH vDataSource in 'bzx', 'c2', 'cboe', 'edgx'
+
+  LIB CONNECT TO 'Jufa_$(vEnv):$(vDataSource)_options';
+
+  RestConnectorMasterTable:
+  SQL SELECT 
+      "Symbol",
+      "Call/Put",
+      "Expiration",
+      "Strike Price",
+      "Volume",
+      "Matched",
+      "Routed",
+      "Bid Size",
+      "Bid Price",
+      "Ask Size",
+      "Ask Price",
+      "Last Price"
+  FROM CSV (header on, delimiter ",", quote """") "CSV_source";
+
+  [CSV_source]:
+  LOAD	
+      [Symbol],
+      [Call/Put],
+      [Expiration],
+      [Strike Price],
+      [Volume],
+      [Matched],
+      [Routed],
+      [Bid Size],
+      [Bid Price],
+      [Ask Size],
+      [Ask Price],
+      [Last Price],
+      '2023-06-15' as [Trade Date],
+      '$(vDataSource)' as [Data Source],
+      1 as [Row Counter]
+  RESIDENT RestConnectorMasterTable;
+
+  DROP TABLE RestConnectorMasterTable;
+
+NEXT
+  
+STORE [CSV_source] into [lib://Jufa_$(vEnv):DataFiles/$(vEnv)_CBOE_all_options_data_20230615.qvd](qvd);
+
+SET vDataSource = '';
+*/
+
+SET vEnv = 'Dev';
+LET vTodayDate = Today();
+
+//2023-2025 holidays list
+[Holidays23_25]:
+Mapping LOAD * Inline
+[
+Holiday, YN
+2023-01-02, 1
+2023-01-16, 1
+2023-02-20, 1
+2023-04-07, 1
+2023-05-29, 1
+2023-06-19, 1
+2023-09-04, 1
+2023-12-25, 1
+2024-01-01, 1
+2024-01-15, 1
+2024-02-19, 1
+2024-03-29, 1
+2024-05-27, 1
+2024-06-19, 1
+2024-09-02, 1
+2025-01-01, 1
+2025-01-20, 1
+2025-02-17, 1
+2025-04-18, 1
+2025-05-26, 1
+2025-06-19, 1
+2025-09-01, 1
+]
+;
+
+TodayIsHoliday:
+Load *
+    , ApplyMap('Holidays23_25',vToday,0) as IsHoliday 
+;
+Load *
+    , Today() as vToday
+Inline [
+A
+1];
+
+vTodayIsHoliday = Peek('IsHoliday',0,'TodayIsHoliday')
+
+
+IF Weekday(Today())*1=6 or Weekday(Today())*1=0 or vTodayIsHoliday=1 THEN
+  
+  LET vHolidaysMsg = '>>>'&vTodayDate&' is a holiday, no new data be added to qvd.<<<';
+  TRACE $(vHolidaysMsg);
+  LOAD * FROM [lib://Jufa_$(vEnv):DataFiles/$(vEnv)_CBOE_all_options_data.qvd](qvd);
+  EXIT SCRIPT;
+
+ELSE
+
+  //Increment load cboe all options daily data file.
+  FOR EACH vDataSource in 'bzx', 'c2', 'cboe', 'edgx'
+
+    LIB CONNECT TO 'Jufa_$(vEnv):$(vDataSource)_options';
+
+    RestConnectorMasterTable:
+    SQL SELECT 
+        "Symbol",
+        "Call/Put",
+        "Expiration",
+        "Strike Price",
+        "Volume",
+        "Matched",
+        "Routed",
+        "Bid Size",
+        "Bid Price",
+        "Ask Size",
+        "Ask Price",
+        "Last Price"
+    FROM CSV (header on, delimiter ",", quote """") "CSV_source";
+
+    [Incremental]:
+    LOAD	
+    	[Symbol],
+        [Call/Put],
+        [Expiration],
+        [Strike Price],
+        [Volume],
+        [Matched],
+        [Routed],
+        [Bid Size],
+        [Bid Price],
+        [Ask Size],
+        [Ask Price],
+        [Last Price],
+        '$(vTodayDate)' as [Trade Date],
+        '$(vDataSource)' as [Data Source],
+        1 as [Row Counter]
+    RESIDENT RestConnectorMasterTable;
+
+    DROP TABLE RestConnectorMasterTable;
+
+  NEXT
+
+  Concatenate
+
+  LOAD * FROM [lib://Jufa_$(vEnv):DataFiles/$(vEnv)_CBOE_all_options_data.qvd](qvd);
+
+  STORE [Incremental] into [lib://Jufa_$(vEnv):DataFiles/$(vEnv)_CBOE_all_options_data.qvd](qvd);
+
+  SET vDataSource = '';
+
+END IF
