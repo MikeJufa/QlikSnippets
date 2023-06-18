@@ -9,6 +9,11 @@ SET vScaleNumber = If($1>1000000, Num($1/1000000, '#$(ThousandSep)##0$(DecimalSe
 	));
 
 If($(vFactValueCur(SALES_AMT)) >= 1E9, Num($(vFactValueCur(SALES_AMT))/1E9, '$#,##0. B')
-    , If($(vFactValueCur(SALES_AMT) >= 1/E6, Num($(vFactValueCur(SALES_AMT))/1E6, '$#,##0. M')
-	, If($(vFactValueCur(SALES_AMT) >= 1/E3, Num($(vFactValueCur(SALES_AMT))/1E3, '$#,##0. K')
+    , If($(vFactValueCur(SALES_AMT) >= 1E6, Num($(vFactValueCur(SALES_AMT))/1E6, '$#,##0. M')
+	, If($(vFactValueCur(SALES_AMT) >= 1E3, Num($(vFactValueCur(SALES_AMT))/1E3, '$#,##0. K')
 	, If($(vFactValueCur(SALES_AMT) >= 0, Num($(vFactValueCur(SALES_AMT)), '$#,##0.')))))
+
+If($(vAmount) >= 1E9, Dual(Num($(vAmount)/1E9, '$#,##0. B'),$(vAmount))
+    , If($(vAmount) >= 1E6, Dual(Num($(vAmount)/1E6, '$#,##0. M'),$(vAmount))
+	, If($(vAmount) >= 1E3, Dual(Num($(vAmount)/1E3, '$#,##0. K'),$(vAmount))
+	, If($(vAmount) >= 0, Dual(Num($(vAmount), '$#,##0.'),$(vAmount))))))
