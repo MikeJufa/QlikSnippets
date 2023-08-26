@@ -1,0 +1,104 @@
+SET ThousandSep=',';
+SET DecimalSep='.';
+SET MoneyThousandSep=',';
+SET MoneyDecimalSep='.';
+SET MoneyFormat='$#,##0.00;-$#,##0.00';
+SET TimeFormat='h:mm:ss TT';
+SET DateFormat='MM/DD/YYYY';
+SET TimestampFormat='MM/DD/YYYY h:mm:ss[.fff] TT';
+SET FirstWeekDay=6;
+SET BrokenWeeks=1;
+SET ReferenceDay=0;
+SET FirstMonthOfYear=1;
+SET CollationLocale='en-CA';
+SET CreateSearchIndexOnReload=1;
+SET MonthNames='Jan;Feb;Mar;Apr;May;Jun;Jul;Aug;Sep;Oct;Nov;Dec';
+SET LongMonthNames='January;February;March;April;May;June;July;August;September;October;November;December';
+SET DayNames='Mon;Tue;Wed;Thu;Fri;Sat;Sun';
+SET LongDayNames='Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Sunday';
+SET NumericalAbbreviation='3:k;6:M;9:G;12:T;15:P;18:E;21:Z;24:Y;-3:m;-6:μ;-9:n;-12:p;-15:f;-18:a;-21:z;-24:y';
+
+
+Fact_Table:
+load *,
+dates as FactTableDates;
+load * inline
+[
+dates
+01/01/2023
+02/01/2023
+03/01/2023
+04/01/2023
+05/01/2023
+06/01/2023
+07/01/2023
+08/01/2023
+09/01/2023
+10/01/2023
+11/01/2023
+12/01/2023
+];
+
+NoConcatenate
+
+[3month]:
+load
+min(dates) as CurrentDate,
+addmonths(min(dates),2) as Prev3Months
+Resident Fact_Table;
+ 
+let v3MCurrent = peek('CurrentDate',0,'3month');
+let v3MPrev3month = peek('Prev3Months',0,'3month');
+
+drop table [3month];
+ 
+NoConcatenate
+
+[6month]:
+load
+min(dates) as CurrentDate,
+addmonths(min(dates),5) as Prev6Months
+Resident Fact_Table;
+ 
+let v6MCurrent = peek('CurrentDate',0,'6month');
+let v6MPrev6month = peek('Prev6Months',0,'6month');
+
+drop table [6month];
+ 
+NoConcatenate
+[12month]:
+load
+min(dates) as CurrentDate,
+addmonths(min(dates),11) as Prev12Months
+Resident Fact_Table;
+ 
+let v12MCurrent = peek('CurrentDate',0,'12month');
+let v12MPrev12month = peek('Prev12Months',0,'12month');
+drop table [12month];
+ 
+NoConcatenate
+ 
+Calendar_3M:
+Load
+'$(v3MCurrent)' + iterno()-1 as Num,
+    Date('$(v3MCurrent)' + iterno()-1) as dates,
+    '3 Month' as Flag
+    autogenerate 1 while '$(v3MCurrent)' + iterno()-1 <= '$(v3MPrev3month)';
+    
+Concatenate (Calendar_3M)
+ 
+Calendar_6M:
+Load
+'$(v6MCurrent)' + iterno()-1 as Num,
+    Date('$(v6MCurrent)' + iterno()-1) as dates,
+    '6 Month' as Flag
+    autogenerate 1 while '$(v6MCurrent)' + iterno()-1 <= '$(v6MPrev6month)';
+     
+Concatenate (Calendar_3M)
+ 
+Calendar_12M:
+Load
+'$(v12MCurrent)' + iterno()-1 as Num,
+    Date('$(v12MCurrent)' + iterno()-1) as dates,
+    '12 Month' as Flag
+    autogenerate 1 while '$(v12MCurrent)' + iterno()-1 <= '$(v12MPrev12month)';

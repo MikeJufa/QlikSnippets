@@ -1,0 +1,139 @@
+Let r = HCNoRows();
+Let vGrandTotal = 0;
+Let vSubAustralia = 0;
+Let vSubNewZealand = 0;
+Let vSubCommercial = 0;
+Let vSubRetail = 0;
+Let vSubInstitutional = 0;
+Let vSubTechnology = 0;
+Let vSubCorporate = 0;
+Let vSubInsurance = 0;
+Let vSubGlobal = 0;
+Let vSubForex = 0;
+
+For i = 1 to r
+   Let vGrandTotal = vGrandTotal + HCValue(Actuals,i);
+   Let vDim        = HCValue(#hc1.dimension.1, i);
+   
+   if Match(vDim,'Australia') then
+      Let vSubAustralia = vSubAustralia + HCValue(Actuals,i);
+   elseif Match(vDim,'New Zealand') then
+      Let vSubNewZealand = vSubNewZealand + HCValue(Actuals,i);
+   elseif Match(vDim,'Commercial') then   
+      Let vSubCommercial = vSubCommercial + HCValue(Actuals,i);
+   elseif Match(vDim,'Retail') then
+      Let vSubRetail = vSubRetail + HCValue(Actuals,i);
+   elseif Match(vDim,'Institutional') then
+      Let vSubInstitutional = vSubInstitutional + HCValue(Actuals,i);
+   elseif Match(vDim,'Technology') then
+      Let vSubTechnology = vSubTechnology + HCValue(Actuals,i);
+   elseif Match(vDim,'Corporate') then
+      Let vSubCorporate = vSubCorporate + HCValue(Actuals,i);
+   elseif Match(vDim,'Insurance') then
+      Let vSubInsurance = vSubInsurance + HCValue(Actuals,i);
+   elseif Match(vDim,'Global') then
+      Let vSubGlobal = vSubGlobal + HCValue(Actuals,i);
+   elseif Match(vDim,'Forex') then
+      Let vSubForex = vSubForex + HCValue(Actuals,i);
+   end if
+
+Next
+
+Let vTotal = 0;
+Let vAustralia = 0;
+Let vNewZealand = 0;
+Let vCommercial = 0;
+Let vRetail = 0;
+Let vInstitutional = 0;
+Let vTechnology = 0;
+Let vCorporate = 0;
+Let vInsurance = 0;
+Let vGlobal = 0;
+Let vForex = 0;
+
+For i = 1 to r
+   Let vDim   = HCValue(#hc1.dimension.1, i); 
+   Let vTotal = vTotal + HCValue(Actuals,i);
+   Put #hc1.measure.2(i) = $(vTotal);
+   Put #hc1.measure.3(i) = $(vTotal)/$(vGrandTotal);
+//   Put #hc1.measure.1.attribute.1(i) = Mod(i,$(vColors));
+   if Match(vDim,'Australia') then
+      Let vAustralia = vAustralia + HCValue(Actuals,i);
+	  Put #hc1.measure.4(i) = $(vAustralia);
+	  Put #hc1.measure.5(i) = $(vAustralia)/$(vSubAustralia);
+//     Put #hc1.measure.4.attribute.1(i) = Mod(1,11);
+   elseif Match(vDim,'New Zealand') then
+      Let vNewZealand = vNewZealand + HCValue(Actuals,i);
+	  Put #hc1.measure.4(i) = $(vNewZealand);
+	  Put #hc1.measure.5(i) = $(vNewZealand)/$(vSubNewZealand);
+   elseif Match(vDim,'Commercial') then   
+      Let vCommercial = vCommercial + HCValue(Actuals,i);
+	  Put #hc1.measure.4(i) = $(vCommercial);
+	  Put #hc1.measure.5(i) = $(vCommercial)/$(vSubCommercial);
+   elseif Match(vDim,'Retail') then
+      Let vRetail = vRetail + HCValue(Actuals,i);
+	  Put #hc1.measure.4(i) = $(vRetail);
+	  Put #hc1.measure.5(i) = $(vRetail)/$(vSubRetail);
+   elseif Match(vDim,'Institutional') then
+      Let vInstitutional = vInstitutional + HCValue(Actuals,i);
+	  Put #hc1.measure.4(i) = $(vInstitutional);
+	  Put #hc1.measure.5(i) = $(vInstitutional)/$(vSubInstitutional);
+   elseif Match(vDim,'Technology') then
+      Let vTechnology = vTechnology + HCValue(Actuals,i);
+	  Put #hc1.measure.4(i) = $(vTechnology);
+	  Put #hc1.measure.5(i) = $(vTechnology)/$(vSubTechnology);
+   elseif Match(vDim,'Corporate') then
+      Let vCorporate = vCorporate + HCValue(Actuals,i);
+	  Put #hc1.measure.4(i) = $(vCorporate);
+	  Put #hc1.measure.5(i) = $(vCorporate)/$(vSubCorporate);
+   elseif Match(vDim,'Insurance') then
+      Let vInsurance = vInsurance + HCValue(Actuals,i);
+	  Put #hc1.measure.4(i) = $(vInsurance);
+	  Put #hc1.measure.5(i) = $(vInsurance)/$(vSubInsurance);
+   elseif Match(vDim,'Global') then
+      Let vGlobal = vGlobal + HCValue(Actuals,i);
+	  Put #hc1.measure.4(i) = $(vGlobal);
+	  Put #hc1.measure.5(i) = $(vGlobal)/$(vSubGlobal);
+   elseif Match(vDim,'Forex') then
+      Let vForex = vForex + HCValue(Actuals,i);
+	  Put #hc1.measure.4(i) = $(vForex);
+	  Put #hc1.measure.5(i) = $(vForex)/$(vSubForex);
+   end if
+
+Next
+/*
+Add Load 'Australia'     as Division, Dual('Total',13) as "Financial Month", $(vSubAustralia)     as Actuals,$(vSubAustralia)     As "Running Total", 100 As "%",$(vSubAustralia)     As "Divisional Total",100 As "%." Autogenerate 1;
+Add Load 'New Zealand'   as Division, Dual('Total',13) as "Financial Month", $(vSubNewZealand)    as Actuals,$(vSubNewZealand)    As "Running Total", 100 As "%",$(vSubNewZealand)    As "Divisional Total",100 As "%." Autogenerate 1;
+Add Load 'Commercial'    as Division, Dual('Total',13) as "Financial Month", $(vSubCommercial)    as Actuals,$(vSubCommercial)    As "Running Total", 100 As "%",$(vSubCommercial)    As "Divisional Total",100 As "%." Autogenerate 1;
+Add Load 'Retail'        as Division, Dual('Total',13) as "Financial Month", $(vSubRetail)        as Actuals,$(vSubRetail)        As "Running Total", 100 As "%",$(vSubRetail)        As "Divisional Total",100 As "%." Autogenerate 1;
+Add Load 'Institutional' as Division, Dual('Total',13) as "Financial Month", $(vSubInstitutional) as Actuals,$(vSubInstitutional) As "Running Total", 100 As "%",$(vSubInstitutional) As "Divisional Total",100 As "%." Autogenerate 1;
+Add Load 'Technology'    as Division, Dual('Total',13) as "Financial Month", $(vSubTechnology)    as Actuals,$(vSubTechnology)    As "Running Total", 100 As "%",$(vSubTechnology)    As "Divisional Total",100 As "%." Autogenerate 1;
+Add Load 'Corporate'     as Division, Dual('Total',13) as "Financial Month", $(vSubCorporate)     as Actuals,$(vSubCorporate)     As "Running Total", 100 As "%",$(vSubCorporate)     As "Divisional Total",100 As "%." Autogenerate 1;
+Add Load 'Insurance'     as Division, Dual('Total',13) as "Financial Month", $(vSubInsurance)     as Actuals,$(vSubInsurance)     As "Running Total", 100 As "%",$(vSubInsurance)     As "Divisional Total",100 As "%." Autogenerate 1;
+Add Load 'Global'        as Division, Dual('Total',13) as "Financial Month", $(vSubGlobal)        as Actuals,$(vSubGlobal)        As "Running Total", 100 As "%",$(vSubGlobal)        As "Divisional Total",100 As "%." Autogenerate 1;
+Add Load 'Forex'         as Division, Dual('Total',13) as "Financial Month", $(vSubForex)         as Actuals,$(vSubAustralia)     As "Running Total", 100 As "%",$(vSubForex)         As "Divisional Total",100 As "%." Autogenerate 1;
+*/
+Let r = Null();
+Let vGrandTotal = Null();
+Let vAustralia = Null();
+Let vNewZealand = Null();
+Let vCommercial = Null();
+Let vRetail = Null();
+Let vInstitutional = Null();
+Let vTechnology = Null();
+Let vCorporate = Null();
+Let vInsurance = Null();
+Let vGlobal = Null();
+Let vForex = Null();
+Let vDim   = Null(); 
+Let vTotal = Null(); 
+Let vAustralia = Null(); 
+Let vNewZealand = Null(); 
+Let vCommercial = Null(); 
+Let vRetail = Null(); 
+Let vInstitutional = Null(); 
+Let vTechnology = Null(); 
+Let vCorporate = Null(); 
+Let vInsurance = Null(); 
+Let vGlobal = Null(); 
+Let vForex = Null(); 

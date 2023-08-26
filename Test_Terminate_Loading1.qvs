@@ -1,0 +1,44 @@
+//Just query the filesize() or the noofrows() and add an invalide statement to break the script execution, maybe like:
+
+if filesize('fullpath') = 0 or noofrows('MyTable') = 0 then
+   ... an error ...
+end if 
+
+
+//3, 6, 12 months period buckets
+SET vToday = Today();
+SET vTodayNum = Num(Date#(Today()));
+SET v3MonthAgo = AddMonths(MonthStart(Today()),-3,1);
+SET v3MonthAgoNum = Num(Date#(AddMonths(MonthStart(Today()),-3,1)));
+SET v6MonthAgo = AddMonths(MonthStart(Today()),-6,1);
+SET v6MonthAgoNum = Num(Date#(AddMonths(MonthStart(Today()),-6,1)));
+SET v12MonthAgo = AddMonths(MonthStart(Today()),-12,1);
+SET v12MonthAgoNum = Num(Date#(AddMonths(MonthStart(Today()),-12,1)));
+
+
+
+Load *
+    , If([Date_Field_Num]>$(v3MonthAgoNum) and [Date_Field_Num]<$(vTodayNum), Dual('3_Months_Bucket',1),
+        If([Date_Field_Num]>$(v6MonthAgoNum) and [Date_Field_Num]<$(vTodayNum), Dual('6_Months_Bucket',2),
+          If([Date_Field_Num]>$(v12MonthAgoNum) and [Date_Field_Num]<$(vTodayNum), Dual('12_Months_Bucket',3), Dual('Earlier',4)))) as [Period_Bucket]
+;
+Load *
+    , Date(MonthStart([Date_Field]),'YYYY-MM') as [Month_Start]
+    , MonthEnd([Date_Field]) as [Month_End]
+    , Month([Date_Field]) as [Month_Name]
+    , Num(Date#([Date_Field])) as [Date_Field_Num]
+;
+load * 
+Inline
+[
+Date_Field, Sales
+2023-01-15, 100
+2023-08-15, 200
+2023-07-15, 300
+2023-02-15, 400
+2022-09-15, 500
+2023-03-15, 600
+2001-01-15, 700
+2023-08-10, 220
+]
+;

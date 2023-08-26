@@ -17,3 +17,6 @@ If($(vAmount) >= 1E9, Dual(Num($(vAmount)/1E9, '$#,##0. B'),$(vAmount))
     , If($(vAmount) >= 1E6, Dual(Num($(vAmount)/1E6, '$#,##0. M'),$(vAmount))
 	, If($(vAmount) >= 1E3, Dual(Num($(vAmount)/1E3, '$#,##0. K'),$(vAmount))
 	, If($(vAmount) >= 0, Dual(Num($(vAmount), '$#,##0.'),$(vAmount))))))
+
+
+set var = "ConvertToLocalTime(ReloadTime(),'Eastern Time (US & Canada)')";

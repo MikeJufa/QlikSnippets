@@ -1,0 +1,29 @@
+//Gets the total no of rows in the current Chart or Table
+Let P = HCNoRows();
+//Declaring Quarterly Variable
+Let vQ1Total = 0;
+Let vQ2Total = 0;
+Let vQ3Total = 0;
+Let vQ4Total = 0;
+
+For J = 1 to P
+   //getting the value of the Dimension for a row
+   Let vDim = HCValue(#hc1.dimension.1, J); 
+   //Control Statement, to check and accumulate the numbers to the right variables
+   if Match(vDim,'Jan','Feb','Mar') then
+      Let vQ1Total = vQ1Total + HCValue(Actuals,J);
+   elseif Match(vDim,'Apr','May','Jun') then
+      Let vQ2Total = vQ2Total + HCValue(Actuals,J);
+   elseif Match(vDim,'Jul','Aug','Sep') then
+      Let vQ3Total = vQ3Total + HCValue(Actuals,J);
+   elseif Match(vDim,'Oct','Nov','Dec') then
+      Let vQ4Total = vQ4Total + HCValue(Actuals,J);
+   end if
+Next
+//If $(vShowHideTotal) = 1 then
+    //Using the combination of Prefix and Regular statements to add the additional rows to the Hypercube
+    Add Load 'Q1' as "Financial Month", Floor($(vQ1Total)) as Actuals Autogenerate 1;
+    Add Load 'Q2' as "Financial Month", Floor($(vQ2Total)) as Actuals Autogenerate 1;
+    Add Load 'Q3' as "Financial Month", Floor($(vQ3Total)) as Actuals Autogenerate 1;
+    Add Load 'Q4' as "Financial Month", Floor($(vQ4Total)) as Actuals Autogenerate 1;
+//endif
