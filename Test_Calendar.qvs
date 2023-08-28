@@ -23,3 +23,6 @@ AUTOGENERATE((S_DATE_END - S_DATE_START) + 1);
 
 SET S_DATE_START=;
 SET S_DATE_END=;
+
+
+//Sum({<[Date]={"$(= '>=' & WeekStart(Date(Today() - 43)) & '<=' & WeekEnd(Date(Today()-7)))"}>}Sales) 
