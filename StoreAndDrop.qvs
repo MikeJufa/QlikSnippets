@@ -1,0 +1,56 @@
+Sub StoreAndDrop(vTableName)
+
+ Trace Store and Drop $(vTableName);
+
+ // Store the table to QVD
+ Trace Storing [$(vTableName)] to [$(vQVDPath)\E_$(vTableName).qvd];
+ Store [$(vTableName)] into [$(vQVDPath)\E_$(vTableName).qvd];
+
+ // Drop it
+ Trace Dropping Table [$(vTableName)];
+ Drop Table [$(vTableName)];
+ 
+End Sub
+
+Call StoreAndDrop('Customer');
+
+
+
+LET vTotalTablesLoaded=0; 
+LET vScriptStartTime=now(); 
+LET vLoadStartTime=now();
+
+Sub StoreAndDrop(vTableName)
+
+ Trace Store and Drop $(vTableName);
+
+ Let vTotalTablesLoaded=$(vTotalTablesLoaded) + 1;
+ Let vLoadEndTime=Now();
+ 
+ // if needed
+ UNQUALIFY *;
+
+ TablesLoaded: // replace with join(TablesLoaded) after first table
+ LOAD
+     '$(vTableName)' as [Loaded Table Name],
+     NoOfRows('$(vTableName)') as [Number of Records Loaded],
+     '$(vLoadStartTime)' as [Load Start Time],
+     '$(vLoadEndTime)' as [Load End Time],
+     Time(TimeStamp#('$(vLoadEndTime)')-TimeStamp#('$(vLoadStartTime)')) as [Table Load Time]
+ AutoGenerate (1);
+
+ // if needed
+ QUALIFY *; 
+ UNQUALIFY [Join_*], [*ID]; 
+
+ // Store the table to QVD
+ Trace Storing [$(vTableName)] to [$(vQVDPath)\E_$(vTableName).qvd];
+ Store [$(vTableName)] into [$(vQVDPath)\E_$(vTableName).qvd];
+
+ // Drop it
+ Trace Dropping Table [$(vTableName)];
+ Drop Table [$(vTableName)];
+ 
+ Let vLoadStartTime=now();
+ 
+End Sub
