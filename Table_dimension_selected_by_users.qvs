@@ -1,0 +1,33 @@
+LET HidePrefix = '_';
+
+//Create a data island
+T1:
+Load * Inline 
+[
+_DimensionList:
+Dimension
+Dim1
+Dim2
+Dim3
+]
+;
+
+
+//Field (=Dim1)
+//Label (Dim1)
+//In Table Show Dimension Column If
+//=IF(GetSelectedCount(_DimensionList)>0,WildMatch(Concat(_DimensionList,'|'),'*Dim1*')>0,0)
+
+
+
+//Field (=Dim2)
+//Label (Dim2)
+//In Table Show Dimension Column If
+//=IF(GetSelectedCount(_DimensionList)>0,WildMatch(Concat(_DimensionList,'|'),'*Dim2*')>0,0)
+
+
+
+//Field (=Dim3)
+//Label (Dim3)
+//In Table Show Dimension Column If
+//=IF(GetSelectedCount(_DimensionList)>0,WildMatch(Concat(_DimensionList,'|'),'*Dim3*')>0,0)
