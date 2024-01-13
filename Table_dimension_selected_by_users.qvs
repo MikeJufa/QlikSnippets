@@ -12,7 +12,7 @@ Dim3
 ]
 ;
 
-
+//In Dimension
 //Field (=Dim1)
 //Label (Dim1)
 //In Table Show Dimension Column If
@@ -31,3 +31,19 @@ Dim3
 //Label (Dim3)
 //In Table Show Dimension Column If
 //=IF(GetSelectedCount(_DimensionList)>0,WildMatch(Concat(_DimensionList,'|'),'*Dim3*')>0,0)
+
+T2:
+Load * Inline
+[
+_MeasureList:
+Mea1
+Mea2
+Mea3
+]
+;
+
+//In Measure
+//Field [=Sum(Expression1)]
+//Label (Mea1)
+//In Table Show Measure Column If
+//=IF(GetSelectedCount(_MeasureList)>0,WildMatch(Concat(_MeasureList,'|'),'*Mea1*')>0,0)
