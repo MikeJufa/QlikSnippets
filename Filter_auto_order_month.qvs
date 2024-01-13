@@ -1,0 +1,6 @@
+//in sorting tab
+//check Sort by state [Descending]
+//check Sort by expression [Ascending]
+//check Sort numerically
+//in Expression
+//=only({1} [OrderDate.autoCalender.Month])
