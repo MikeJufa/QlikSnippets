@@ -1,0 +1,18 @@
+//in sorting tab
+//check Sort by state [Descending]
+//check Sort by expression [Ascending]
+//check Sort numerically
+//in Expression
+//=only({1} [OrderDate.autoCalender.Month])
+
+//if(mod(rowno(total),2)=0,lightgray())
+//If(GetSelectedCount(MONTH)>0, WildMatch(Concat(Year,'|'),'*20*')>0,0)
+
+//vExcludeBlue
+//If(GetSelectedCount(PerformFilter)>0,(WildMatch(Concat(PerformFilter,'|'),'*Blue*')>0)*-1,0)
+//If(GetSelectedCount(PerformFilter)>0 and WildMatch(Concate(PerformFilter,'|'),'*Blue*')=1,Dual('Y',(WildMatch(Concat(PerformFilter,'|'),'*Blue*')>0*-1),0)
+
+//vExcludeRed
+//If(GetSelectedCount(PerformFilter)>0 and WildMatch(Concate(PerformFilter,'|'),'*Red*')=1,Dual('Y',(WildMatch(Concat(PerformFilter,'|'),'*Red*')>0*-1),0)
+
+//Count({<P30Flag={1},IsR3={$(vExcludeR3)},IsUT={$(vExcludeUT)},ISXX={$(vExcludeXX)},BlueCount={$(vExcludeBlue)},RedCount={$(vExcludeRed)}>}SC_ID)/Count({IsR3={$(vExcludeR3)},IsUT={$(vExcludeUT)},ISXX={$(vExcludeXX)},BlueCount={$(vExcludeBlue)},RedCount={$(vExcludeRed)}>}SC_ID)

@@ -1,0 +1,27 @@
+//Gets the total no of rows in the current Chart or Table
+Let r = HCNoRows();
+//Initializing a variable to store the totals
+Let vGrandTotal = 0;
+Let vTotal =0;
+
+//Looping through the rows to generate the Total
+For i = 1 to r
+   //Picks the value of the Measure Actuals and adds it back to the variable
+   Let vGrandTotal = vGrandTotal + HCValue(Actuals,i);
+Next
+
+//Secondary loop to generate the Running total and the percentage
+For i = 1 to r
+   //Picks the value of the Measure Actuals and adds it back to the vTotal variable
+   Let vTotal = vTotal + HCValue(Actuals,i);
+   //Pushing the computed value to the Running Total Measure
+   Put #hc1.measure.2(i) = $(vTotal);
+   //Calculating and Pushing the computed value to the % Measure
+   Put #hc1.measure.3(i) = $(vTotal)/$(vGrandTotal);
+Next
+
+//I am habituated to cleaning up all the variables i have created just for scripting
+Let i = Null();
+Let r = Null();
+Let vGrandTotal = Null();
+Let vTotal = Null(); 
