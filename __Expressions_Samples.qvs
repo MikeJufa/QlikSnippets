@@ -13,6 +13,15 @@
 //If(GetSelectedCount(PerformFilter)>0 and WildMatch(Concate(PerformFilter,'|'),'*Blue*')=1,Dual('Y',(WildMatch(Concat(PerformFilter,'|'),'*Blue*')>0*-1),0)
 
 //vExcludeRed
-//If(GetSelectedCount(PerformFilter)>0 and WildMatch(Concate(PerformFilter,'|'),'*Red*')=1,Dual('Y',(WildMatch(Concat(PerformFilter,'|'),'*Red*')>0*-1),0)
+//=If(GetSelectedCount(ExColorCode)>0 and WildMatch(Concat(ExColorCode),'|','*Red*'),0,'1,0')
 
 //Count({<P30Flag={1},IsR3={$(vExcludeR3)},IsUT={$(vExcludeUT)},ISXX={$(vExcludeXX)},BlueCount={$(vExcludeBlue)},RedCount={$(vExcludeRed)}>}SC_ID)/Count({IsR3={$(vExcludeR3)},IsUT={$(vExcludeUT)},ISXX={$(vExcludeXX)},BlueCount={$(vExcludeBlue)},RedCount={$(vExcludeRed)}>}SC_ID)
+
+//vMeasureAndDimTypeFilter = If(GetSelectedCount($2)>0 and WildMatch(Concat($2,'|'),'*$1*'),1,0)
+//$(vMeasureAndDimTypeFilter(Amount,MeasureType))
+
+//vExcludeRedColor = If(GetSelectedCount(ExColorCode)>0 and WildMatch(Concat(ExColorCode),'|','*Red*'),0,'1,0')
+
+//vFilterColorSortExpression = WildMatch(color_code,'*Red*','*Blue*','*Black*','*Orange*')
+
+//vMeasureAndDimTypeFilter = If(GetSelectedCount($2)>0 and WildMatch(Concat($2,'|'),'*$1*'),1,0)

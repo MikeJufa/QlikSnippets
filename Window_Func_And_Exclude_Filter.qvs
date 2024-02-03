@@ -1,0 +1,94 @@
+SET ThousandSep=',';
+SET DecimalSep='.';
+SET MoneyThousandSep=',';
+SET MoneyDecimalSep='.';
+SET MoneyFormat='$#,##0.00;-$#,##0.00';
+SET TimeFormat='h:mm:ss TT';
+SET DateFormat='YYYY-MM-DD';
+SET TimestampFormat='YYYY-MM-DD h:mm:ss[.fff] TT';
+SET FirstWeekDay=6;
+SET BrokenWeeks=1;
+SET ReferenceDay=0;
+SET FirstMonthOfYear=1;
+SET CollationLocale='en-CA';
+SET CreateSearchIndexOnReload=1;
+SET MonthNames='Jan;Feb;Mar;Apr;May;Jun;Jul;Aug;Sep;Oct;Nov;Dec';
+SET LongMonthNames='January;February;March;April;May;June;July;August;September;October;November;December';
+SET DayNames='Mon;Tue;Wed;Thu;Fri;Sat;Sun';
+SET LongDayNames='Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Sunday';
+SET NumericalAbbreviation='3:k;6:M;9:G;12:T;15:P;18:E;21:Z;24:Y;-3:m;-6:μ;-9:n;-12:p;-15:f;-18:a;-21:z;-24:y';
+
+
+DimType:
+Load * Inline
+[
+DimType
+TransactionRanking
+AvgCustTransaction
+MaxCustTransaction
+]
+;
+
+MeasureType:
+Load * Inline
+[
+MeasureType
+Sales Amount
+Sales Quantity
+]
+;
+
+ExcludeColorCode:
+Load * Inline
+[
+ExColorCode
+Excluding Red Color
+Excluding Orange Color
+Excluding Blue Color
+Excluding Black Color
+]
+;
+
+Main:
+Load *
+    , If(color_code='Red',1,0) as IsRed
+    , If(color_code='Blue',1,0) as IsBlue
+    , If(color_code='Black',1,0) as IsBlack
+    , If(color_code='Orange',1,0) as IsOrange
+;
+Load * 
+    , Window(WRank(0),customer_id, 'Desc', transaction_amount) as TransactionRanking
+    , Window(Avg(transaction_amount),customer_id) as AvgCustTransaction
+    , Window(Max(transaction_amount),customer_id) as MaxCustTransaction
+Inline 
+[
+transaction_id, transaction_date, transaction_amount, transaction_quantity, customer_id, size, color_code
+3750, 20180830, 23.56, 2, 2038593, L, Red
+3751, 20180907, 556.31, 6, 203521, M, Orange
+3752, 20180916, 5.75, 1, 5646471, S, Blue
+3753, 20180922, 125.00, 7, 3036491, L, Black
+3754, 20180922, 484.21, 13, 049681, XS, Red
+3756, 20180922, 59.18, 2, 2038593, M, Blue
+3757, 20180923, 177.42, 21, 203521, XL, Black
+3758, 20180924, 153.42, 14, 2038593, L, Red
+3759, 20180925, 7.42, 5, 203521, M, Orange
+3760, 20180925, 80.12, 18, 5646471, M, Blue
+3761, 20180926, 3.42, 7, 3036491, XS, Black
+3763, 20180926, 63.55, 12, 049681, S, Red
+3763, 20180927, 177.56, 10, 2038593, L, Blue
+3764, 20180927, 325.95, 8, 203521, XL, Black
+]
+;
+
+
+/*
+Variables:
+vMeasureAndDimTypeFilter = If(GetSelectedCount($2)>0 and WildMatch(Concat($2,'|'),'*$1*'),1,0)
+$(vMeasureAndDimTypeFilter(Amount,MeasureType))
+
+vExcludeRedColor = If(GetSelectedCount(ExColorCode)>0 and WildMatch(Concat(ExColorCode),'|','*Red*'),0,'1,0')
+
+vFilterColorSortExpression = WildMatch(color_code,'*Red*','*Blue*','*Black*','*Orange*')
+
+vMeasureAndDimTypeFilter = If(GetSelectedCount($2)>0 and WildMatch(Concat($2,'|'),'*$1*'),1,0)
+*/
