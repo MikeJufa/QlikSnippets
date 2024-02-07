@@ -25,3 +25,9 @@
 //vFilterColorSortExpression = WildMatch(color_code,'*Red*','*Blue*','*Black*','*Orange*')
 
 //vMeasureAndDimTypeFilter = If(GetSelectedCount($2)>0 and WildMatch(Concat($2,'|'),'*$1*'),1,0)
+
+//='# of Orders '&GetCurrentSelections(chr(13)&chr(10), ': ', ',', 9, 'State A')
+
+//Synchronizing Selections between the Default state and Alternate states
+//Count({[State A]<[orderDate.autoCalendar.Year] = $::[orderDate.autoCalendar.Year], [orderDate.autoCalendar.Month] = $::[orderDate.autoCalendar.Month]>} distinct orderID)
+//Count({[State B]<[orderDate.autoCalendar.Year] = $::[orderDate.autoCalendar.Year], [orderDate.autoCalendar.Month] = $::[orderDate.autoCalendar.Month]>} distinct orderID)

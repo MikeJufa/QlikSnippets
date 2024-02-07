@@ -1,0 +1,46 @@
+//This Load works fine on my computer:
+
+Set vConcatenate = ;
+
+sub ScanFolder(Root)
+    for each FileExtension in 'csv'
+        for each FoundFile in filelist( Root & '\*.' & FileExtension)
+                FileList:
+                $(vConcatenate)
+                LOAD *, '$(FoundFile)' as SourceFile
+                FROM [$(FoundFile)] (txt, codepage is 1252, embedded labels, delimiter is ',', msq, header is 2 lines);
+                
+                Set vConcatenate = Concatenate;
+        next FoundFile
+    next FileExtension
+
+    for each SubDirectory in dirlist( Root & '\*' )
+        call ScanFolder(SubDirectory)
+    next SubDirectory
+end sub
+
+Call ScanFolder('C:\Users\hic\Documents\2012\Work\QV Apps\DoDir') ;
+
+
+
+
+
+
+//the basic structure would be the following
+sub ScanFolder(Root)
+    for each FileExtension in 'qvw','mp3','ape','flac','ogg'
+        for each FoundFile in filelist( Root & '\*.' & FileExtension)
+            FileList:
+            Load
+            '$(FoundFile)'               as [FilenameWithPath],
+            '$(FileExtension)'           as [Extension]
+            Autogenerate(1);
+        next FoundFile
+    next FileExtension
+
+    for each SubDirectory in dirlist( Root & '\*' )
+        call ScanFolder(SubDirectory)
+    next SubDirectory
+end sub
+
+Call ScanFolder('.') ;
