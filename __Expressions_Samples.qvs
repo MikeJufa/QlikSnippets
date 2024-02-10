@@ -31,3 +31,5 @@
 //Synchronizing Selections between the Default state and Alternate states
 //Count({[State A]<[orderDate.autoCalendar.Year] = $::[orderDate.autoCalendar.Year], [orderDate.autoCalendar.Month] = $::[orderDate.autoCalendar.Month]>} distinct orderID)
 //Count({[State B]<[orderDate.autoCalendar.Year] = $::[orderDate.autoCalendar.Year], [orderDate.autoCalendar.Month] = $::[orderDate.autoCalendar.Month]>} distinct orderID)
+
+//='Memory (GB) by ' & if($(vViewGroup)=1,'Minute',   if($(vViewGroup)=2,'Hour',     if($(vViewGroup)=3,'Day',       if($(vViewGroup)=4,'Week',         if($(vViewGroup)=5,'Month')))))
