@@ -1,0 +1,20 @@
+//Need Initial load and store the qvd file first.
+
+LIB CONNECT TO ....
+
+MaxKeyLoad:
+Load Max(OrderId) as MaxID
+From [lib://....data.qvd](qvd);
+
+LET MaxID = Peek('MaxID',0,MaxKeyLoad);
+
+[Orders]:
+Load *;
+SQL SELECT * FROM "Sales"."dbo"."Orders$"
+Where OrderID > '$(MaxID)';
+
+Concatenate
+Load * From [lib://....data.qvd](qvd);
+
+//Store the new larger qvd file
+Store Orders into [lib://....data.qvd](qvd);

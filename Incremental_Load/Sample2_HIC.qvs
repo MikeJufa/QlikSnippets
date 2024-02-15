@@ -1,0 +1,37 @@
+//https://qhic.se/2023/11/03/incremental-load/
+
+//===========Load the entire table, this is executed only at a full load============
+Fact:
+SQL select
+    ChangeDate, Key, Attribute, ...
+From ...;
+
+If not IsPartialReload() Then 
+    LET LastChangeDate = Now();
+End If 
+
+//=========Load the changed records only, Executed only at a partial load===========
+Merge Only (ChangeDate, LastChangeDate) on Key
+Concatenate (Facts)
+SQL Select Operation,
+    ChangeDate, Key, Attribute, ...
+    From ...
+    Where ChangeDate >= #$(LastChangeDate)#;
+
+//============Load the previous table from a local QVD file=============
+Facts:
+Load
+    ChangeDate, Key, Attribute, ...
+    From LocalQVDFile.qvd(qvd);
+
+//========Load changed records from teh original source==========
+Merge (ChangeDate, LastChangeDate) on Key
+Concatenate(Facts)
+SQL Select Operation, 
+    ChangeDate, Key, Attribute, ...
+    From ... 
+    Where ChangeDate >=#$(LastChangeDate)#;
+
+//===========Store the new table into a QVD============
+Store Facts into LocalQVDFile.qvd(qvd);
+
