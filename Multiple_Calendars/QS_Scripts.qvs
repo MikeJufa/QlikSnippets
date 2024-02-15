@@ -1,3 +1,5 @@
+//https://community.qlik.com/t5/Design/Let-s-Take-a-walk-on-the-Calendar-Date-Bridge-Working-with/ba-p/2133428
+
 //==============Auto-generated section====================
 Set dataManagerTables = '','multi-cal';
 //This block renames script tables from non generated section which conflict with the names of managed tables

@@ -35,3 +35,53 @@ SQL Select Operation,
 //===========Store the new table into a QVD============
 Store Facts into LocalQVDFile.qvd(qvd);
 
+/*
+//=========Merge Example 1=============
+Set DateFormat='D/M/YYYY';
+Persons:
+load * inline [
+Name, Number
+Jake, 3
+Jill, 2
+Steven, 3
+];
+
+
+Merge (ChangeDate, LastChangeDate) on Name Concatenate(Persons)
+LOAD * inline [
+Operation, ChangeDate,   Name,     Number
+Insert,    1/1/2021,     Mary,     4
+Delete,    1/1/2021,     Steven, 
+Update,    2/1/2021,     Jake,     5
+];
+
+//=========Merge Example 2=============
+Set DateFormat='D/M/YYYY';
+Persons:
+Load * Inline [
+PersonID, Name, Number
+1, Jake, 3
+2, Jill, 2
+3, Steven, 3
+];
+
+Merge (ChangeDate, LastChangeDate) on PersonID Concatenate(Persons)
+Load * Inline [
+Operation, ChangeDate,   PersonID, Name,     Number
+Insert,    1/1/2021,     4,        Mary,     4
+Delete,    1/1/2021,     3,        Steven, 
+];
+
+Merge (ChangeDate, LastChangeDate) on PersonID Concatenate(Persons)
+Load * Inline [
+Operation, ChangeDate,   PersonID, Number
+Update,    2/1/2021,     1,        5
+Update,    3/1/2021,     2,        6
+];
+
+
+//=========Merge Example 3=============
+Merge Only (ChangeDate, LastChangeDate) on Name Concatenate(Persons)
+LOAD Operation, ChangeDate,  Name, Number 
+from [lib://ChangeFilesFolder/BulkChangesInPersonsTable.csv] (txt)
+where ChangeDate >='$(LastChangeDate)';
